@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/Rinaa/subscription-service/internal/model"
+	"github.com/riperaspberry/subscription-service/internal/model"
 
 	"github.com/google/uuid"
 )
