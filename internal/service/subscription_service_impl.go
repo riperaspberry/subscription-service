@@ -1,6 +1,7 @@
 package service
 
 import (
+	"time"
 	"context"
 	"github.com/google/uuid"
 	"github.com/riperaspberry/subscription-service/internal/model"
@@ -16,19 +17,39 @@ func NewSubscriptionService(repo repository.SubscriptionRepository) Subscription
 }
 func (s *subscriptionService) Create(ctx context.Context, req model.CreateSubscriptionRequest) (*model.Subscription, error) {
 	userID, err := uuid.Parse(req.UserID)
-	if err != nil {
-		return nil, err
-	}
-	subscription := &model.Subscription{
-		ServiceName: req.ServiceName,
-		Price:       req.Price,
-		UserID:      userID,
-	}
-	err = s.repo.Create(ctx, subscription)
 
 	if err != nil {
 		return nil, err
 	}
+
+
+	startDate, err := time.Parse(
+		"01-2006",
+		req.StartDate,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+
+	subscription := &model.Subscription{
+		ServiceName: req.ServiceName,
+		Price:       req.Price,
+		UserID:      userID,
+		StartDate:   startDate,
+	}
+
+
+	err = s.repo.Create(
+		ctx,
+		subscription,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
 
 	return subscription, nil
 }
