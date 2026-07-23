@@ -1,0 +1,26 @@
+# binaries
+bin/
+dist/
+
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+
+# test
+*.test
+
+# coverage
+coverage.out
+
+# env
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# swagger
+docs/swagger.json
+docs/swagger.yaml
