@@ -110,12 +110,10 @@ func (r *subscriptionRepository) List(ctx context.Context) ([]model.Subscription
 }
 
 func (r *subscriptionRepository) Update(ctx context.Context, subscription *model.Subscription) error {
-	query := `UPDATE subscriptions SET service_name = $1, price = $2, start_date = $3, end_date = $4 WHERE id = $5`
+	query := `UPDATE subscriptions SET service_name = $1, price = $2 WHERE id = $3`
 	if _, err := r.db.Exec(ctx, query,
 		subscription.ServiceName,
 		subscription.Price,
-		subscription.StartDate,
-		subscription.EndDate,
 		subscription.ID,
 	); err != nil {
 		slog.ErrorContext(ctx, "db update subscription failed", "id", subscription.ID, "error", err)
