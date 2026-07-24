@@ -12,10 +12,13 @@ func SetupRouter(
 	subscriptions := r.Group("/subscriptions")
 	{
 		subscriptions.POST("", subscriptionHandler.Create)
+
 		subscriptions.GET("", subscriptionHandler.List)
+		subscriptions.GET("/calculate", subscriptionHandler.Calculate)
 		subscriptions.GET("/:id", subscriptionHandler.GetByID)
-		subscriptions.DELETE("/:id", subscriptionHandler.Delete)
+
 		subscriptions.PUT("/:id", subscriptionHandler.Update)
+		subscriptions.DELETE("/:id", subscriptionHandler.Delete)
 	}
 
 	return r

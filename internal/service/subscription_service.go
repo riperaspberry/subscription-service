@@ -12,4 +12,5 @@ type SubscriptionService interface {
 	Update(ctx context.Context, id uuid.UUID, req model.UpdateSubscriptionRequest) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	List(ctx context.Context) ([]model.Subscription, error)
+	Calculate(ctx context.Context, req model.CalculateRequest) (*model.CalculateResponse, error)
 }
