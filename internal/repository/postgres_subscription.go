@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	
 
 	"github.com/riperaspberry/subscription-service/internal/model"
 
@@ -59,4 +60,22 @@ func (r *subscriptionRepository) Update(ctx context.Context, subscription *model
 	query := ` UPDATE subscriptions SET service_name = $1, price = $2 WHERE id = $3`
 	_, err := r.db.Exec(ctx, query, subscription.ServiceName, subscription.Price, subscription.ID)
 	return err
+}
+func (r *subscriptionRepository) GetSubscriptionsForCalculation(ctx context.Context, userID uuid.UUID, serviceName string) ([]model.Subscription, error) {
+	query := ` SELECT id, service_name, price, user_id, start_date, end_date, created_at FROM subscriptions WHERE user_id = $1 AND service_name = $2`
+	rows, err := r.db.Query(ctx, query, userID, serviceName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var subscriptions []model.Subscription
+	for rows.Next() {
+		var subscription model.Subscription
+		err := rows.Scan(&subscription.ID, &subscription.ServiceName, &subscription.Price, &subscription.UserID, &subscription.StartDate, &subscription.EndDate, &subscription.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		subscriptions = append(subscriptions, subscription)
+	}
+	return subscriptions, nil
 }

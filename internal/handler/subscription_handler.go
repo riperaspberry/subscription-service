@@ -131,3 +131,20 @@ func (h *SubscriptionHandler) Update(c *gin.Context) {
 
 	c.Status(http.StatusOK)
 }
+func (h *SubscriptionHandler) Calculate(c *gin.Context) {
+	var req model.CalculateRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	response, err := h.service.Calculate(c.Request.Context(), req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, response)
+}

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	
 
 	"github.com/riperaspberry/subscription-service/internal/model"
 
@@ -18,4 +19,5 @@ type SubscriptionRepository interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	List(ctx context.Context) ([]model.Subscription, error)
+	GetSubscriptionsForCalculation(ctx context.Context, userID uuid.UUID, serviceName string) ([]model.Subscription, error)
 }
