@@ -110,24 +110,29 @@ func (s *subscriptionService) List(ctx context.Context) ([]model.Subscription, e
 }
 
 func (s *subscriptionService) Update(ctx context.Context, id uuid.UUID, req model.UpdateSubscriptionRequest) error {
-	startDate, err := parseMonthYear(req.StartDate)
-	if err != nil {
-		slog.WarnContext(ctx, "invalid start date", "id", id, "start_date", req.StartDate, "error", err)
-		return err
-	}
-
-	endDate, err := parseOptionalMonthYear(req.EndDate)
-	if err != nil {
-		slog.WarnContext(ctx, "invalid end date", "id", id, "end_date", req.EndDate, "error", err)
-		return err
-	}
 
 	subscription := &model.Subscription{
 		ID:          id,
 		ServiceName: req.ServiceName,
 		Price:       req.Price,
-		StartDate:   startDate,
-		EndDate:     endDate,
+	}
+
+	if req.StartDate != "" {
+		startDate, err := parseMonthYear(req.StartDate)
+		if err != nil {
+			slog.WarnContext(ctx, "invalid start date", "id", id, "error", err)
+			return err
+		}
+		subscription.StartDate = startDate
+	}
+
+	if req.EndDate != "" {
+		endDate, err := parseOptionalMonthYear(req.EndDate)
+		if err != nil {
+			slog.WarnContext(ctx, "invalid end date", "id", id, "error", err)
+			return err
+		}
+		subscription.EndDate = endDate
 	}
 
 	if err := s.repo.Update(ctx, subscription); err != nil {
@@ -136,9 +141,9 @@ func (s *subscriptionService) Update(ctx context.Context, id uuid.UUID, req mode
 	}
 
 	slog.InfoContext(ctx, "subscription updated", "id", id)
+
 	return nil
 }
-
 func (s *subscriptionService) Calculate(ctx context.Context, req model.CalculateRequest) (*model.CalculateResponse, error) {
 	userID, err := uuid.Parse(req.UserID)
 	if err != nil {
